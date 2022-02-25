@@ -12,7 +12,12 @@ import carla
 import numpy as np
 from PIL import Image, ImageDraw
 
-from leaderboard.autoagents import autonomous_agent
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
+# from leaderboard.autoagents import autonomous_agent
+from srunner.autoagents.autonomous_agent import AutonomousAgent
 from neat.architectures import AttentionField
 from neat.config import GlobalConfig
 from neat.utils import flow_to_color
@@ -23,7 +28,7 @@ SAVE_PATH = os.environ.get('SAVE_PATH', None)
 
 
 def get_entry_point():
-	return 'MultiTaskAgent'
+	return 'NeatAgent'
 
 
 def scale_and_crop_image(image, scale=1, crop=256):
@@ -41,10 +46,9 @@ def scale_and_crop_image(image, scale=1, crop=256):
     return cropped_image
 
 
-class MultiTaskAgent(autonomous_agent.AutonomousAgent):
+class NeatAgent(AutonomousAgent):
 
 	def setup(self, path_to_conf_file):
-		self.track = autonomous_agent.Track.SENSORS
 		self.config_path = path_to_conf_file
 		self.step = -1
 		self.wall_start = time.time()
@@ -57,7 +61,8 @@ class MultiTaskAgent(autonomous_agent.AutonomousAgent):
 		self.input_buffer = {'rgb': deque(), 'rgb_left': deque(), 'rgb_right': deque()}
 
 		self.config = GlobalConfig()
-		self.net = AttentionField(self.config, 'cuda')
+		self.device = 'cuda'
+		self.net = AttentionField(self.config, self.device)
 		self.net.encoder.load_state_dict(torch.load(os.path.join(path_to_conf_file, 'best_encoder.pth')))
 		self.net.decoder.load_state_dict(torch.load(os.path.join(path_to_conf_file, 'best_decoder.pth')))
 
@@ -146,7 +151,7 @@ class MultiTaskAgent(autonomous_agent.AutonomousAgent):
 					'x': 0.0, 'y': 0.0, 'z': 0.0,
 					'roll': 0.0, 'pitch': 0.0, 'yaw': 0.0,
 					'sensor_tick': 0.01,
-					'id': 'gps'
+					'id': 'GPS'
 					},
 				{
 					'type': 'sensor.speedometer',
@@ -163,7 +168,7 @@ class MultiTaskAgent(autonomous_agent.AutonomousAgent):
 		rgb_right = cv2.cvtColor(input_data['rgb_right'][1][:, :, :3], cv2.COLOR_BGR2RGB)
 		rgb_front = cv2.cvtColor(input_data['rgb_front'][1][:, :, :3], cv2.COLOR_BGR2RGB)
 		bev = cv2.cvtColor(input_data['bev'][1][:, :, :3], cv2.COLOR_BGR2RGB)
-		gps = input_data['gps'][1][:2]
+		gps = input_data['GPS'][1][:2]
 		speed = input_data['speed'][1]['speed']
 		compass = input_data['imu'][1][-1]
 
