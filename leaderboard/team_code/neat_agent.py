@@ -84,7 +84,7 @@ class NeatAgent(AutonomousAgent):
 			self.save_path.mkdir(parents=True, exist_ok=False)
 
 			(self.save_path / 'rgb').mkdir(parents=True, exist_ok=False)
-			(self.save_path / 'bev').mkdir(parents=True, exist_ok=False)
+			# (self.save_path / 'bev').mkdir(parents=True, exist_ok=False)
 			(self.save_path / 'flow').mkdir(parents=True, exist_ok=False)
 			(self.save_path / 'out').mkdir(parents=True, exist_ok=False)
 			(self.save_path / 'img').mkdir(parents=True, exist_ok=False)
@@ -125,20 +125,20 @@ class NeatAgent(AutonomousAgent):
 					'width': 400, 'height': 300, 'fov': 100,
 					'id': 'rgb_right'
 					},
-				{
-					'type': 'sensor.camera.rgb',
-					'x': 1.3, 'y': 0.0, 'z':2.3,
-					'roll': 0.0, 'pitch': 0.0, 'yaw': 0.0,
-					'width': 800, 'height': 600, 'fov': 100,
-					'id': 'rgb_front'
-					},
-				{	
-					'type': 'sensor.camera.rgb',
-					'x': 1.3, 'y': 0.0, 'z': 25,
-					'roll': 0.0, 'pitch': -90.0, 'yaw': 0.0,
-					'width': 800, 'height': 800, 'fov': 100,
-					'id': 'bev'
-					},
+				# {
+				# 	'type': 'sensor.camera.rgb',
+				# 	'x': 1.3, 'y': 0.0, 'z':2.3,
+				# 	'roll': 0.0, 'pitch': 0.0, 'yaw': 0.0,
+				# 	'width': 800, 'height': 600, 'fov': 100,
+				# 	'id': 'rgb_front'
+				# 	},
+				# {	
+				# 	'type': 'sensor.camera.rgb',
+				# 	'x': 1.3, 'y': 0.0, 'z': 25,
+				# 	'roll': 0.0, 'pitch': -90.0, 'yaw': 0.0,
+				# 	'width': 800, 'height': 800, 'fov': 100,
+				# 	'id': 'bev'
+				# 	},
 				{
 					'type': 'sensor.other.imu',
 					'x': 0.0, 'y': 0.0, 'z': 0.0,
@@ -166,8 +166,8 @@ class NeatAgent(AutonomousAgent):
 		rgb = cv2.cvtColor(input_data['rgb'][1][:, :, :3], cv2.COLOR_BGR2RGB)
 		rgb_left = cv2.cvtColor(input_data['rgb_left'][1][:, :, :3], cv2.COLOR_BGR2RGB)
 		rgb_right = cv2.cvtColor(input_data['rgb_right'][1][:, :, :3], cv2.COLOR_BGR2RGB)
-		rgb_front = cv2.cvtColor(input_data['rgb_front'][1][:, :, :3], cv2.COLOR_BGR2RGB)
-		bev = cv2.cvtColor(input_data['bev'][1][:, :, :3], cv2.COLOR_BGR2RGB)
+		# rgb_front = cv2.cvtColor(input_data['rgb_front'][1][:, :, :3], cv2.COLOR_BGR2RGB)
+		# bev = cv2.cvtColor(input_data['bev'][1][:, :, :3], cv2.COLOR_BGR2RGB)
 		gps = input_data['GPS'][1][:2]
 		speed = input_data['speed'][1]['speed']
 		compass = input_data['imu'][1][-1]
@@ -176,8 +176,8 @@ class NeatAgent(AutonomousAgent):
 				'rgb': rgb,
 				'rgb_left': rgb_left,
 				'rgb_right': rgb_right,
-				'rgb_front': rgb_front,
-				'bev': bev,
+				# 'rgb_front': rgb_front,
+				# 'bev': bev,
 				'gps': gps,
 				'speed': speed,
 				'compass': compass,
@@ -276,8 +276,8 @@ class NeatAgent(AutonomousAgent):
 	def save(self, tick_data):
 		frame = self.step // 10
 
-		Image.fromarray(tick_data['rgb_front']).save(self.save_path / 'rgb' / ('%04d.png' % frame))
-		Image.fromarray(tick_data['bev']).save(self.save_path / 'bev' / ('%04d.png' % frame))
+		# Image.fromarray(tick_data['rgb_front']).save(self.save_path / 'rgb' / ('%04d.png' % frame))
+		# Image.fromarray(tick_data['bev']).save(self.save_path / 'bev' / ('%04d.png' % frame))
 
 		outfile = open(self.save_path / 'meta' / ('%04d.json' % frame), 'w')
 		json.dump(self.pid_metadata, outfile, indent=4)
