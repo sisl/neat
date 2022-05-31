@@ -157,7 +157,8 @@ class NeatAgent(AutonomousAgent):
 					'type': 'sensor.speedometer',
 					'reading_frequency': 20,
 					'id': 'speed'
-					}
+					},
+	            # {'type': 'sensor.camera.rgb', 'x': 0.7, 'y': 0, 'z': 50, 'roll': 0.0, 'pitch': -90.0, 'yaw': 0.0, 'width': 384*2, 'height': 240*2, 'fov': 50, 'id': 'VIDEO_CAMERA'},
 				]
 
 	def tick(self, input_data):

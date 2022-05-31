@@ -158,6 +158,7 @@ class AttentionField(nn.Module):
         num_pairs = len(waypoints) - 1
         best_norm = 1e5
         desired_speed = 0
+        aim = waypoints[-1] - waypoints[-2] # SISL added: `aims` referenced before assignment
         for i in range(num_pairs):
             # magnitude of vectors, used for speed
             desired_speed += np.linalg.norm(
